@@ -121,7 +121,7 @@ export async function buildTokenExchangeMessage(formattedEventData: any, source:
   const TX_HASH_URL_ETHERSCAN = getTxHashURLfromEtherscan(txHash);
   const TX_HASH_URL_TENDERLY = getTxHashURLfromTenderly(txHash);
 
-  gasUsed = formatForPrint(gasUsed);
+  if (gasUsed !== "¯⧵_(ツ)_/¯") gasUsed = formatForPrint(gasUsed);
 
   let ethName = "ETH";
   let ethAddress;
@@ -198,7 +198,7 @@ export async function buildRemoveLiquidityOneMessage(formattedEventData: any, so
   const TX_HASH_URL_ETHERSCAN = getTxHashURLfromEtherscan(txHash);
   const TX_HASH_URL_TENDERLY = getTxHashURLfromTenderly(txHash);
 
-  gasUsed = formatForPrint(gasUsed);
+  if (gasUsed !== "¯⧵_(ツ)_/¯") gasUsed = formatForPrint(gasUsed);
 
   let ethName = "ETH";
   let ethAddress;
@@ -266,7 +266,7 @@ export async function buildRemoveLiquidityMessage(formattedEventData: any, sourc
   const TX_HASH_URL_ETHERSCAN = getTxHashURLfromEtherscan(txHash);
   const TX_HASH_URL_TENDERLY = getTxHashURLfromTenderly(txHash);
 
-  gasUsed = formatForPrint(gasUsed);
+  if (gasUsed !== "¯⧵_(ツ)_/¯") gasUsed = formatForPrint(gasUsed);
 
   let ethName = "ETH";
   let ethAddress;
@@ -338,7 +338,7 @@ export async function buildAddLiquidityMessage(formattedEventData: any, source: 
   const TX_HASH_URL_ETHERSCAN = getTxHashURLfromEtherscan(txHash);
   const TX_HASH_URL_TENDERLY = getTxHashURLfromTenderly(txHash);
 
-  gasUsed = formatForPrint(gasUsed);
+  if (gasUsed !== "¯⧵_(ツ)_/¯") gasUsed = formatForPrint(gasUsed);
 
   let ethName = "ETH";
   let ethAddress;

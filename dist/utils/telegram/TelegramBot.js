@@ -121,7 +121,8 @@ export async function buildTokenExchangeMessage(formattedEventData, source) {
     const shortenBuyer = shortenAddress(buyer);
     const TX_HASH_URL_ETHERSCAN = getTxHashURLfromEtherscan(txHash);
     const TX_HASH_URL_TENDERLY = getTxHashURLfromTenderly(txHash);
-    gasUsed = formatForPrint(gasUsed);
+    if (gasUsed !== "¯⧵_(ツ)_/¯")
+        gasUsed = formatForPrint(gasUsed);
     let ethName = "ETH";
     let ethAddress;
     let ethUrl = "https://ethereum.org/669c9e2e2027310b6b3cdce6e1c52962/Ethereum_Whitepaper_-_Buterin_2014.pdf";
@@ -197,7 +198,8 @@ export async function buildRemoveLiquidityOneMessage(formattedEventData, source)
     const shortenBuyer = shortenAddress(buyer);
     const TX_HASH_URL_ETHERSCAN = getTxHashURLfromEtherscan(txHash);
     const TX_HASH_URL_TENDERLY = getTxHashURLfromTenderly(txHash);
-    gasUsed = formatForPrint(gasUsed);
+    if (gasUsed !== "¯⧵_(ツ)_/¯")
+        gasUsed = formatForPrint(gasUsed);
     let ethName = "ETH";
     let ethAddress;
     let ethUrl = "https://ethereum.org/669c9e2e2027310b6b3cdce6e1c52962/Ethereum_Whitepaper_-_Buterin_2014.pdf";
@@ -263,7 +265,8 @@ export async function buildRemoveLiquidityMessage(formattedEventData, source) {
     const shortenBuyer = shortenAddress(buyer);
     const TX_HASH_URL_ETHERSCAN = getTxHashURLfromEtherscan(txHash);
     const TX_HASH_URL_TENDERLY = getTxHashURLfromTenderly(txHash);
-    gasUsed = formatForPrint(gasUsed);
+    if (gasUsed !== "¯⧵_(ツ)_/¯")
+        gasUsed = formatForPrint(gasUsed);
     let ethName = "ETH";
     let ethAddress;
     let ethUrl = "https://ethereum.org/669c9e2e2027310b6b3cdce6e1c52962/Ethereum_Whitepaper_-_Buterin_2014.pdf";
@@ -327,7 +330,8 @@ export async function buildAddLiquidityMessage(formattedEventData, source) {
     const shortenBuyer = shortenAddress(buyer);
     const TX_HASH_URL_ETHERSCAN = getTxHashURLfromEtherscan(txHash);
     const TX_HASH_URL_TENDERLY = getTxHashURLfromTenderly(txHash);
-    gasUsed = formatForPrint(gasUsed);
+    if (gasUsed !== "¯⧵_(ツ)_/¯")
+        gasUsed = formatForPrint(gasUsed);
     let ethName = "ETH";
     let ethAddress;
     let ethUrl = "https://ethereum.org/669c9e2e2027310b6b3cdce6e1c52962/Ethereum_Whitepaper_-_Buterin_2014.pdf";

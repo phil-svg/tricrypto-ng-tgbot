@@ -20,8 +20,8 @@ async function main() {
     const TRICRYPTOUSDT = new WEB3_WS_PROVIDER.eth.Contract(ABI_TRICRYPTOUSDC, ADDRESS_NEWER_TRICRYPTO);
     //////////////////////// HISTO MODE ////////////////////////
     /*
-    const START_BLOCK = 17403135;
-    const END_BLOCK = 17403311;
+    const START_BLOCK = 17408852;
+    const END_BLOCK = 17408852;
   
     // const START_BLOCK = 17401186;
     // const END_BLOCK = 17401186;

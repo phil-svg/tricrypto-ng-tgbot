@@ -63,6 +63,8 @@ async function getSpecificGas(txHash, from) {
     if (!txData.blockNumber)
         return;
     const SIMULATION = await getCallTraceViaTenderly(txData.from, txData.to, txData.blockNumber, txData.input, txData.value);
+    if (!SIMULATION.status)
+        return "¯⧵_(ツ)_/¯";
     if ([ADDRESS_TRICRYPTOUSDC, ADDRESS_NEWER_TRICRYPTO].includes(SIMULATION.from.toLowerCase()) ||
         [ADDRESS_TRICRYPTOUSDC, ADDRESS_NEWER_TRICRYPTO].includes(SIMULATION.to.toLowerCase())) {
         return SIMULATION.gas_used;

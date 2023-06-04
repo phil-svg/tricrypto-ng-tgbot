@@ -28,8 +28,8 @@ async function main() {
 
   //////////////////////// HISTO MODE ////////////////////////
   /*
-  const START_BLOCK = 17403135;
-  const END_BLOCK = 17403311;
+  const START_BLOCK = 17408852;
+  const END_BLOCK = 17408852;
 
   // const START_BLOCK = 17401186;
   // const END_BLOCK = 17401186;

@@ -19,6 +19,10 @@ function getTxHashURLfromTenderly(txHash: string) {
   return "https://dashboard.tenderly.co/tx/mainnet/" + txHash;
 }
 
+function getTxHashURLfromOpenchain(txHash: string) {
+  return "https://openchain.xyz/trace/ethereum/" + txHash;
+}
+
 function getBuyerURL(buyerAddress: string) {
   return "https://etherscan.io/address/" + buyerAddress;
 }
@@ -120,6 +124,7 @@ export async function buildTokenExchangeMessage(formattedEventData: any, source:
 
   const TX_HASH_URL_ETHERSCAN = getTxHashURLfromEtherscan(txHash);
   const TX_HASH_URL_TENDERLY = getTxHashURLfromTenderly(txHash);
+  const TX_HASH_URL_OPENCHAIN = getTxHashURLfromOpenchain(txHash);
 
   if (gasUsed !== "¯⧵_(ツ)_/¯") gasUsed = formatForPrint(gasUsed);
 
@@ -181,7 +186,7 @@ Gas Used: ${gasUsed}
 State Prices: BTC ${formatForPrint(lastPrices0)} | ETH ${formatForPrint(lastPrices1)}
 New Fee: ${formatForPrint(fee)}%
 TVL: ${getDollarAddOnWithoutBrakets(TVL)}
-Links:${hyperlink(getPoolURL(poolAddress), poolName)} |${hyperlink(TX_HASH_URL_ETHERSCAN, "Etherscan")} |${hyperlink(TX_HASH_URL_TENDERLY, "Tenderly")} 🦙🦙🦙
+Links:${hyperlink(getPoolURL(poolAddress), poolName)} |${hyperlink(TX_HASH_URL_ETHERSCAN, "etherscan.io")} |${hyperlink(TX_HASH_URL_OPENCHAIN, "openchain.xyz")} 🦙🦙🦙
   `;
 }
 
@@ -197,6 +202,7 @@ export async function buildRemoveLiquidityOneMessage(formattedEventData: any, so
 
   const TX_HASH_URL_ETHERSCAN = getTxHashURLfromEtherscan(txHash);
   const TX_HASH_URL_TENDERLY = getTxHashURLfromTenderly(txHash);
+  const TX_HASH_URL_OPENCHAIN = getTxHashURLfromOpenchain(txHash);
 
   if (gasUsed !== "¯⧵_(ツ)_/¯") gasUsed = formatForPrint(gasUsed);
 
@@ -249,7 +255,7 @@ Gas Used: ${gasUsed}
 State Prices: BTC ${formatForPrint(lastPrices0)} | ETH ${formatForPrint(lastPrices1)}
 New Fee: ${formatForPrint(fee)}%
 TVL: ${getDollarAddOnWithoutBrakets(TVL)}
-Links:${hyperlink(getPoolURL(poolAddress), poolName)} |${hyperlink(TX_HASH_URL_ETHERSCAN, "Etherscan")} |${hyperlink(TX_HASH_URL_TENDERLY, "Tenderly")} 🦙🦙🦙
+Links:${hyperlink(getPoolURL(poolAddress), poolName)} |${hyperlink(TX_HASH_URL_ETHERSCAN, "etherscan.io")} |${hyperlink(TX_HASH_URL_OPENCHAIN, "openchain.xyz")} 🦙🦙🦙
   `;
 }
 
@@ -265,6 +271,7 @@ export async function buildRemoveLiquidityMessage(formattedEventData: any, sourc
 
   const TX_HASH_URL_ETHERSCAN = getTxHashURLfromEtherscan(txHash);
   const TX_HASH_URL_TENDERLY = getTxHashURLfromTenderly(txHash);
+  const TX_HASH_URL_OPENCHAIN = getTxHashURLfromOpenchain(txHash);
 
   if (gasUsed !== "¯⧵_(ツ)_/¯") gasUsed = formatForPrint(gasUsed);
 
@@ -321,7 +328,7 @@ Gas Used: ${gasUsed}
 State Prices: BTC ${formatForPrint(lastPrices0)} | ETH ${formatForPrint(lastPrices1)}
 New Fee: ${formatForPrint(fee)}%
 TVL: ${getDollarAddOnWithoutBrakets(TVL)}
-Links:${hyperlink(getPoolURL(poolAddress), poolName)} |${hyperlink(TX_HASH_URL_ETHERSCAN, "Etherscan")} |${hyperlink(TX_HASH_URL_TENDERLY, "Tenderly")} 🦙🦙🦙
+Links:${hyperlink(getPoolURL(poolAddress), poolName)} |${hyperlink(TX_HASH_URL_ETHERSCAN, "etherscan.io")} |${hyperlink(TX_HASH_URL_OPENCHAIN, "openchain.xyz")} 🦙🦙🦙
   `;
 }
 
@@ -337,6 +344,7 @@ export async function buildAddLiquidityMessage(formattedEventData: any, source: 
 
   const TX_HASH_URL_ETHERSCAN = getTxHashURLfromEtherscan(txHash);
   const TX_HASH_URL_TENDERLY = getTxHashURLfromTenderly(txHash);
+  const TX_HASH_URL_OPENCHAIN = getTxHashURLfromOpenchain(txHash);
 
   if (gasUsed !== "¯⧵_(ツ)_/¯") gasUsed = formatForPrint(gasUsed);
 
@@ -394,7 +402,7 @@ Gas Used: ${gasUsed}
 State Prices: BTC ${formatForPrint(lastPrices0)} | ETH ${formatForPrint(lastPrices1)}
 New Fee: ${formatForPrint(fee)}%
 TVL: ${getDollarAddOnWithoutBrakets(TVL)}
-Links:${hyperlink(getPoolURL(poolAddress), poolName)} |${hyperlink(TX_HASH_URL_ETHERSCAN, "Etherscan")} |${hyperlink(TX_HASH_URL_TENDERLY, "Tenderly")} 🦙🦙🦙
+Links:${hyperlink(getPoolURL(poolAddress), poolName)} |${hyperlink(TX_HASH_URL_ETHERSCAN, "etherscan.io")} |${hyperlink(TX_HASH_URL_OPENCHAIN, "openchain.xyz")} 🦙🦙🦙
   `;
 }
 

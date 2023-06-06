@@ -4,6 +4,7 @@ import axios from "axios";
 import * as dotenv from "dotenv";
 import { getTxData } from "../web3Calls/generic.js";
 import { getPriceOf_WETH } from "../priceAPI/priceAPI.js";
+import fetch from "node-fetch";
 dotenv.config();
 
 async function getCallTraceViaTenderly(from: string, to: string, blockNumber: number, data: string, value: string) {
@@ -56,42 +57,59 @@ async function getCallTraceViaTenderly(from: string, to: string, blockNumber: nu
   }
 }
 
+async function getCallTraceViaAlchemy(txHash: string): Promise<any> {
+  const API_KEY = process.env.ALCHEMY;
+  const url = `https://eth-mainnet.g.alchemy.com/v2/${API_KEY}`;
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      method: "trace_transaction",
+      params: [txHash],
+      id: 1,
+      jsonrpc: "2.0",
+    }),
+  });
+
+  if (response.status !== 200) {
+    return "request failed";
+  }
+
+  const data = (await response.json()) as { result: any };
+  return data.result;
+}
+
 async function getSpecificGas(txHash: string, from: string): Promise<any | null> {
   const ADDRESS_TRICRYPTOUSDC = "0x7F86Bf177Dd4F3494b841a37e810A34dD56c829B".toLowerCase();
   const ADDRESS_NEWER_TRICRYPTO = "0xf5f5B97624542D72A9E06f04804Bf81baA15e2B4".toLowerCase();
 
-  let txData = await getTxData(txHash);
-  if (!txData) return;
-  if (!txData.to) return;
-  if (!txData.blockNumber) return;
+  const SIMULATION = await getCallTraceViaAlchemy(txHash);
 
-  const SIMULATION = await getCallTraceViaTenderly(txData.from, txData.to, txData.blockNumber, txData.input, txData.value);
+  if (SIMULATION === "request failed") return "¯⧵_(ツ)_/¯";
 
-  if (!SIMULATION.status) return "¯⧵_(ツ)_/¯";
+  let maxGasUsed = 0;
 
-  if (
-    [ADDRESS_TRICRYPTOUSDC, ADDRESS_NEWER_TRICRYPTO].includes(SIMULATION.from.toLowerCase()) ||
-    [ADDRESS_TRICRYPTOUSDC, ADDRESS_NEWER_TRICRYPTO].includes(SIMULATION.to.toLowerCase())
-  ) {
-    return SIMULATION.gas_used;
-  }
+  for (let i = 0; i < SIMULATION.length; i++) {
+    const { action, result } = SIMULATION[i];
+    const { from, to } = action;
+    const { gasUsed } = result;
 
-  const CALL_TRACE = SIMULATION.call_trace;
-  if (!CALL_TRACE) return;
+    if (
+      from.toLowerCase() === ADDRESS_TRICRYPTOUSDC ||
+      to.toLowerCase() === ADDRESS_TRICRYPTOUSDC ||
+      from.toLowerCase() === ADDRESS_NEWER_TRICRYPTO ||
+      to.toLowerCase() === ADDRESS_NEWER_TRICRYPTO
+    ) {
+      const gasUsedDecimal = parseInt(gasUsed, 16);
 
-  const filteredTrace = CALL_TRACE.filter(
-    (trace: { from: string; to: string }) =>
-      [ADDRESS_TRICRYPTOUSDC, ADDRESS_NEWER_TRICRYPTO].includes(trace.from.toLowerCase()) || [ADDRESS_TRICRYPTOUSDC, ADDRESS_NEWER_TRICRYPTO].includes(trace.to.toLowerCase())
-  );
-
-  const filteredTraceFrom = filteredTrace.filter((entry: { from: string }) => entry.from.toLowerCase() === from.toLowerCase());
-
-  const maxGasUsed = filteredTraceFrom.reduce((max: number, entry: { gas_used: number }) => {
-    if (entry.gas_used > max) {
-      return entry.gas_used;
+      if (gasUsedDecimal > maxGasUsed) {
+        maxGasUsed = gasUsedDecimal;
+      }
     }
-    return max;
-  }, 0);
+  }
 
   return maxGasUsed;
 }

@@ -1,57 +1,9 @@
 import fs from "fs";
 import { getTransactionReceipt, getTransferEvents, getTxReceipt, getWeb3HttpProvider } from "./Web3.js";
-import axios from "axios";
 import * as dotenv from "dotenv";
 import { getPriceOf_WETH } from "../priceAPI/priceAPI.js";
 import fetch from "node-fetch";
 dotenv.config();
-async function getCallTraceViaTenderly(from, to, blockNumber, data, value) {
-    const { TENDERLY_USER, TENDERLY_ACCESS_KEY } = process.env;
-    const SIMULATE_URL = `https://api.tenderly.co/api/v1/account/${TENDERLY_USER}/project/project/simulate`;
-    const opts = {
-        headers: {
-            "content-type": "application/JSON",
-            "X-Access-Key": TENDERLY_ACCESS_KEY,
-        },
-    };
-    const body = {
-        block_number: blockNumber,
-        network_id: "1",
-        from: from,
-        to: to,
-        input: data,
-        gas: 9999977983,
-        gas_price: "0",
-        value: value,
-        save_if_fails: false,
-        save: false,
-        simulation_type: "quick", //"full",
-    };
-    const MAX_RETRIES = 5;
-    const RETRY_DELAY = 10000; // 10 seconds in milliseconds
-    for (let i = 0; i < MAX_RETRIES; i++) {
-        try {
-            let resp = await axios.post(SIMULATE_URL, body, opts);
-            // console.log("resp.data.transaction", resp.data.transaction);
-            return resp.data.transaction;
-        }
-        catch (err) {
-            if (err instanceof Error) {
-                console.log(`Attempt ${i + 1} failed with error: ${err.message}`);
-            }
-            else {
-                console.log(`Attempt ${i + 1} failed with an unknown error.`);
-            }
-            if (i < MAX_RETRIES - 1) {
-                console.log(`Retrying in ${RETRY_DELAY / 1000} seconds...`);
-                await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
-            }
-            else {
-                throw err;
-            }
-        }
-    }
-}
 async function getCallTraceViaAlchemy(txHash) {
     const API_KEY = process.env.ALCHEMY;
     const url = `https://eth-mainnet.g.alchemy.com/v2/${API_KEY}`;
@@ -71,11 +23,13 @@ async function getCallTraceViaAlchemy(txHash) {
         return "request failed";
     }
     const data = (await response.json());
+    console.log("data", data);
     return data.result;
 }
 async function getSpecificGas(txHash, from) {
     const ADDRESS_TRICRYPTOUSDC = "0x7F86Bf177Dd4F3494b841a37e810A34dD56c829B".toLowerCase();
     const ADDRESS_NEWER_TRICRYPTO = "0xf5f5B97624542D72A9E06f04804Bf81baA15e2B4".toLowerCase();
+    await new Promise((resolve) => setTimeout(resolve, 5000)); //5 second timeout to give Alchemy time to pick up the tx for Traces.
     const SIMULATION = await getCallTraceViaAlchemy(txHash);
     if (SIMULATION === "request failed")
         return "¯⧵_(ツ)_/¯";

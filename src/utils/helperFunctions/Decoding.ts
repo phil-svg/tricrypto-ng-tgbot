@@ -27,7 +27,6 @@ async function getCallTraceViaAlchemy(txHash: string): Promise<any> {
   }
 
   const data = (await response.json()) as { result: any };
-  console.log("data", data);
   return data.result;
 }
 

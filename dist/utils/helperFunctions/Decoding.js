@@ -23,7 +23,6 @@ async function getCallTraceViaAlchemy(txHash) {
         return "request failed";
     }
     const data = (await response.json());
-    console.log("data", data);
     return data.result;
 }
 async function getSpecificGas(txHash, from) {

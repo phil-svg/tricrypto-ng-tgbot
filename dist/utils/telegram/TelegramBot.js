@@ -108,8 +108,20 @@ function getDollarAddOnWithoutBrakets(amountStr) {
 function hyperlink(link, name) {
     return "<a href='" + link + "/'> " + name + "</a>";
 }
+let sentMessages = {};
 export function send(bot, message, groupID) {
+    const key = `${groupID}:${message}`;
+    if (sentMessages[key]) {
+        console.log("This message has already been sent to this group in the past 30 seconds.");
+        return;
+    }
     bot.sendMessage(groupID, message, { parse_mode: "HTML", disable_web_page_preview: "true" });
+    // Track the message as sent
+    sentMessages[key] = true;
+    // Delete the message from tracking after 30 seconds
+    setTimeout(() => {
+        delete sentMessages[key];
+    }, 30000); // 30000 ms = 30 seconds
 }
 function shortenAddress(address) {
     return address.slice(0, 5) + ".." + address.slice(-2);

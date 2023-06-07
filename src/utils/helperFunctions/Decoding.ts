@@ -47,7 +47,6 @@ async function getSpecificGas(txHash: string, from: string): Promise<any | null>
 
   await new Promise((resolve) => setTimeout(resolve, 5000)); //5 second timeout to give Alchemy time to pick up the tx for Traces.
   const SIMULATION = await getCallTraceViaAlchemy(txHash);
-  console.log("SIMULATION", SIMULATION);
 
   if (SIMULATION === "request failed") return "¯⧵_(ツ)_/¯";
 
@@ -89,8 +88,6 @@ async function getSpecificGas(txHash: string, from: string): Promise<any | null>
       }
     }
   }
-  console.log("maxGasUsed", maxGasUsed);
-  console.log("gasUsedWithoutTransfers", gasUsedWithoutTransfers);
   return [maxGasUsed, gasUsedWithoutTransfers];
 }
 

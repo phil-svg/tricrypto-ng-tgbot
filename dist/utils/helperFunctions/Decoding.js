@@ -38,7 +38,6 @@ async function getSpecificGas(txHash, from) {
     const ADDRESS_NEWER_TRICRYPTO = "0xf5f5B97624542D72A9E06f04804Bf81baA15e2B4".toLowerCase();
     await new Promise((resolve) => setTimeout(resolve, 5000)); //5 second timeout to give Alchemy time to pick up the tx for Traces.
     const SIMULATION = await getCallTraceViaAlchemy(txHash);
-    console.log("SIMULATION", SIMULATION);
     if (SIMULATION === "request failed")
         return "¯⧵_(ツ)_/¯";
     let maxGasUsed = 0;
@@ -71,8 +70,6 @@ async function getSpecificGas(txHash, from) {
             }
         }
     }
-    console.log("maxGasUsed", maxGasUsed);
-    console.log("gasUsedWithoutTransfers", gasUsedWithoutTransfers);
     return [maxGasUsed, gasUsedWithoutTransfers];
 }
 async function getWBTCPrice(blockNumber) {

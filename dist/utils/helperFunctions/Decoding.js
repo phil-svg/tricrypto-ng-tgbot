@@ -25,14 +25,24 @@ async function getCallTraceViaAlchemy(txHash) {
     const data = (await response.json());
     return data.result;
 }
+function isErc20Transfer(transaction) {
+    const erc20TransferMethodIdentifier = "0xa9059cbb";
+    const addIdentifier = "0x23b872dd";
+    return (transaction.type === "call" &&
+        (transaction.action.input.startsWith(erc20TransferMethodIdentifier) || transaction.action.input.startsWith(addIdentifier)) &&
+        transaction.action.value === "0x0" &&
+        transaction.result.output === "0x0000000000000000000000000000000000000000000000000000000000000001");
+}
 async function getSpecificGas(txHash, from) {
     const ADDRESS_TRICRYPTOUSDC = "0x7F86Bf177Dd4F3494b841a37e810A34dD56c829B".toLowerCase();
     const ADDRESS_NEWER_TRICRYPTO = "0xf5f5B97624542D72A9E06f04804Bf81baA15e2B4".toLowerCase();
     await new Promise((resolve) => setTimeout(resolve, 5000)); //5 second timeout to give Alchemy time to pick up the tx for Traces.
     const SIMULATION = await getCallTraceViaAlchemy(txHash);
+    console.log("SIMULATION", SIMULATION);
     if (SIMULATION === "request failed")
         return "¯⧵_(ツ)_/¯";
     let maxGasUsed = 0;
+    let maxGasUsedIndex = -1;
     for (let i = 0; i < SIMULATION.length; i++) {
         const { action, result } = SIMULATION[i];
         const { from, to } = action;
@@ -44,10 +54,26 @@ async function getSpecificGas(txHash, from) {
             const gasUsedDecimal = parseInt(gasUsed, 16);
             if (gasUsedDecimal > maxGasUsed) {
                 maxGasUsed = gasUsedDecimal;
+                maxGasUsedIndex = i; // Update index
             }
         }
     }
-    return maxGasUsed;
+    let startIndex = maxGasUsedIndex + 1;
+    let endIndex = startIndex + SIMULATION[maxGasUsedIndex].subtraces;
+    let gasUsedWithoutTransfers = maxGasUsed;
+    for (let i = startIndex; i < endIndex; i++) {
+        if (i < SIMULATION.length) {
+            // making sure not to go out of bounds
+            let gasUsedHex = SIMULATION[i].result.gasUsed;
+            let gasUsedDecimal = parseInt(gasUsedHex, 16); // converting hex to decimal
+            if (isErc20Transfer(SIMULATION[i])) {
+                gasUsedWithoutTransfers -= gasUsedDecimal;
+            }
+        }
+    }
+    console.log("maxGasUsed", maxGasUsed);
+    console.log("gasUsedWithoutTransfers", gasUsedWithoutTransfers);
+    return [maxGasUsed, gasUsedWithoutTransfers];
 }
 async function getWBTCPrice(blockNumber) {
     let web3 = getWeb3HttpProvider();
@@ -203,11 +229,13 @@ async function getTVL(source, blockNumber) {
 export async function processTokenExchangeEvent(event, source) {
     let txHash = event.transactionHash;
     let buyer = event.returnValues.buyer;
-    let gasUsed = await getSpecificGas(txHash, buyer);
-    if (!gasUsed) {
+    let gasInfo = await getSpecificGas(txHash, buyer);
+    if (!gasInfo) {
         console.log(`Failed to fetch gas used for transaction: ${txHash}`);
         return null;
     }
+    let gasUsed = gasInfo[0];
+    let gasUsedWithoutTransfers = gasInfo[1];
     let soldAmount = parseInt(event.returnValues.tokens_sold);
     let value;
     let soldName;
@@ -264,16 +292,18 @@ export async function processTokenExchangeEvent(event, source) {
     const hasWETH = await checkForWETH(event.transactionHash, buyer);
     const fee = await getFee(source, event.blockNumber);
     const TVL = await getTVL(source, event.blockNumber);
-    return { TVL, hasWETH, lastPrices0, lastPrices1, txHash, buyer, gasUsed, TOTAL_DOLLAR_VALUE, soldName, soldAmount, boughtName, boughtAmount, fee };
+    return { TVL, hasWETH, lastPrices0, lastPrices1, txHash, buyer, gasUsed, gasUsedWithoutTransfers, TOTAL_DOLLAR_VALUE, soldName, soldAmount, boughtName, boughtAmount, fee };
 }
 export async function processRemoveLiquidityOneEvent(event, source) {
     let txHash = event.transactionHash;
     let buyer = event.returnValues.provider;
-    let gasUsed = await getSpecificGas(txHash, buyer);
-    if (!gasUsed) {
+    let gasInfo = await getSpecificGas(txHash, buyer);
+    if (!gasInfo) {
         console.log(`Failed to fetch gas used for transaction: ${txHash}`);
         return null;
     }
+    let gasUsed = gasInfo[0];
+    let gasUsedWithoutTransfers = gasInfo[1];
     let amount = parseInt(event.returnValues.coin_amount);
     let value;
     let coinName;
@@ -316,16 +346,18 @@ export async function processRemoveLiquidityOneEvent(event, source) {
     const hasWETH = await checkForWETH(event.transactionHash, buyer);
     const fee = await getFee(source, event.blockNumber);
     const TVL = await getTVL(source, event.blockNumber);
-    return { TVL, hasWETH, lastPrices0, lastPrices1, txHash, buyer, amount, gasUsed, TOTAL_DOLLAR_VALUE, coinName, fee };
+    return { TVL, hasWETH, lastPrices0, lastPrices1, txHash, buyer, amount, gasUsed, gasUsedWithoutTransfers, TOTAL_DOLLAR_VALUE, coinName, fee };
 }
 export async function processRemoveLiquidityEvent(event, source) {
     let txHash = event.transactionHash;
     let buyer = event.returnValues.provider;
-    let gasUsed = await getSpecificGas(txHash, buyer);
-    if (!gasUsed) {
+    let gasInfo = await getSpecificGas(txHash, buyer);
+    if (!gasInfo) {
         console.log(`Failed to fetch gas used for transaction: ${txHash}`);
         return null;
     }
+    let gasUsed = gasInfo[0];
+    let gasUsedWithoutTransfers = gasInfo[1];
     let amount_usdc = parseInt(event.returnValues.token_amounts[0]) / 1e6;
     let amount_wbtc = parseInt(event.returnValues.token_amounts[1]) / 1e8;
     let amount_WETH = parseInt(event.returnValues.token_amounts[2]) / 1e18;
@@ -366,16 +398,18 @@ export async function processRemoveLiquidityEvent(event, source) {
     const hasWETH = await checkForWETH(event.transactionHash, buyer);
     const fee = await getFee(source, event.blockNumber);
     const TVL = await getTVL(source, event.blockNumber);
-    return { TVL, hasWETH, lastPrices0, lastPrices1, txHash, buyer, amount_usdc, amount_wbtc, amount_WETH, gasUsed, TOTAL_DOLLAR_VALUE, fee };
+    return { TVL, hasWETH, lastPrices0, lastPrices1, txHash, buyer, amount_usdc, amount_wbtc, amount_WETH, gasUsed, gasUsedWithoutTransfers, TOTAL_DOLLAR_VALUE, fee };
 }
 export async function processAddLiquidityEvent(event, source) {
     let txHash = event.transactionHash;
     let buyer = event.returnValues.provider;
-    let gasUsed = await getSpecificGas(txHash, buyer);
-    if (!gasUsed) {
+    let gasInfo = await getSpecificGas(txHash, buyer);
+    if (!gasInfo) {
         console.log(`Failed to fetch gas used for transaction: ${txHash}`);
         return null;
     }
+    let gasUsed = gasInfo[0];
+    let gasUsedWithoutTransfers = gasInfo[1];
     let added_usdc = parseInt(event.returnValues.token_amounts[0]) / 1e6;
     let added_wbtc = parseInt(event.returnValues.token_amounts[1]) / 1e8;
     let added_WETH = parseInt(event.returnValues.token_amounts[2]) / 1e18;
@@ -416,6 +450,6 @@ export async function processAddLiquidityEvent(event, source) {
     const hasWETH = await checkForWETH(event.transactionHash, buyer);
     const fee = await getFee(source, event.blockNumber);
     const TVL = await getTVL(source, event.blockNumber);
-    return { TVL, hasWETH, lastPrices0, lastPrices1, txHash, buyer, added_usdc, added_wbtc, added_WETH, gasUsed, TOTAL_DOLLAR_VALUE, fee };
+    return { TVL, hasWETH, lastPrices0, lastPrices1, txHash, buyer, added_usdc, added_wbtc, added_WETH, gasUsed, gasUsedWithoutTransfers, TOTAL_DOLLAR_VALUE, fee };
 }
 //# sourceMappingURL=Decoding.js.map

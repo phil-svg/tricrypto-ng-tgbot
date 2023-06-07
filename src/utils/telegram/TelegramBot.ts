@@ -130,7 +130,8 @@ function shortenAddress(address: string): string {
 }
 
 export async function buildTokenExchangeMessage(formattedEventData: any, source: string) {
-  let { TVL, hasWETH, lastPrices0, lastPrices1, txHash, buyer, gasUsed, TOTAL_DOLLAR_VALUE, soldName, soldAmount, boughtName, boughtAmount, fee } = formattedEventData;
+  let { TVL, hasWETH, lastPrices0, lastPrices1, txHash, buyer, gasUsed, gasUsedWithoutTransfers, TOTAL_DOLLAR_VALUE, soldName, soldAmount, boughtName, boughtAmount, fee } =
+    formattedEventData;
   const ADDRESS_USDC = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
   const ADDRESS_WBTC = "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599";
   const ADDRESS_WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
@@ -144,6 +145,7 @@ export async function buildTokenExchangeMessage(formattedEventData: any, source:
   const TX_HASH_URL_OPENCHAIN = getTxHashURLfromOpenchain(txHash);
 
   if (gasUsed !== "¯⧵_(ツ)_/¯") gasUsed = formatForPrint(gasUsed);
+  if (gasUsedWithoutTransfers !== "¯⧵_(ツ)_/¯") gasUsedWithoutTransfers = formatForPrint(gasUsedWithoutTransfers);
 
   let ethName = "ETH";
   let ethAddress;
@@ -199,7 +201,7 @@ export async function buildTokenExchangeMessage(formattedEventData: any, source:
 
   return `
   🚀${hyperlink(buyerURL, shortenBuyer)} swapped ${soldWhat} for ${boughtWhat}${getDollarAddOn(TOTAL_DOLLAR_VALUE)}
-Gas Used: ${gasUsed} 
+Gas Used: ${gasUsed} | w/o Transfers: ${gasUsedWithoutTransfers}
 State Prices: BTC ${formatForPrint(lastPrices0)} | ETH ${formatForPrint(lastPrices1)}
 New Fee: ${formatForPrint(fee)}%
 TVL: ${getDollarAddOnWithoutBrakets(TVL)}
@@ -208,7 +210,7 @@ Links:${hyperlink(getPoolURL(poolAddress), poolName)} |${hyperlink(TX_HASH_URL_E
 }
 
 export async function buildRemoveLiquidityOneMessage(formattedEventData: any, source: string) {
-  let { TVL, hasWETH, lastPrices0, lastPrices1, txHash, buyer, amount, gasUsed, TOTAL_DOLLAR_VALUE, coinName, fee } = formattedEventData;
+  let { TVL, hasWETH, lastPrices0, lastPrices1, txHash, buyer, amount, gasUsed, gasUsedWithoutTransfers, TOTAL_DOLLAR_VALUE, coinName, fee } = formattedEventData;
   const ADDRESS_USDC = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
   const ADDRESS_WBTC = "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599";
   const ADDRESS_WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
@@ -222,6 +224,7 @@ export async function buildRemoveLiquidityOneMessage(formattedEventData: any, so
   const TX_HASH_URL_OPENCHAIN = getTxHashURLfromOpenchain(txHash);
 
   if (gasUsed !== "¯⧵_(ツ)_/¯") gasUsed = formatForPrint(gasUsed);
+  if (gasUsedWithoutTransfers !== "¯⧵_(ツ)_/¯") gasUsedWithoutTransfers = formatForPrint(gasUsedWithoutTransfers);
 
   let ethName = "ETH";
   let ethAddress;
@@ -268,7 +271,7 @@ export async function buildRemoveLiquidityOneMessage(formattedEventData: any, so
 
   return `
   🚀${hyperlink(buyerURL, shortenBuyer)} removed ${removedWhat}${getDollarAddOn(TOTAL_DOLLAR_VALUE)}
-Gas Used: ${gasUsed} 
+Gas Used: ${gasUsed} | w/o Transfers: ${gasUsedWithoutTransfers}
 State Prices: BTC ${formatForPrint(lastPrices0)} | ETH ${formatForPrint(lastPrices1)}
 New Fee: ${formatForPrint(fee)}%
 TVL: ${getDollarAddOnWithoutBrakets(TVL)}
@@ -277,7 +280,8 @@ Links:${hyperlink(getPoolURL(poolAddress), poolName)} |${hyperlink(TX_HASH_URL_E
 }
 
 export async function buildRemoveLiquidityMessage(formattedEventData: any, source: string) {
-  let { TVL, hasWETH, lastPrices0, lastPrices1, txHash, buyer, amount_usdc, amount_wbtc, amount_WETH, gasUsed, TOTAL_DOLLAR_VALUE, fee } = formattedEventData;
+  let { TVL, hasWETH, lastPrices0, lastPrices1, txHash, buyer, amount_usdc, amount_wbtc, amount_WETH, gasUsed, gasUsedWithoutTransfers, TOTAL_DOLLAR_VALUE, fee } =
+    formattedEventData;
   const ADDRESS_USDC = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
   const ADDRESS_WBTC = "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599";
   const ADDRESS_WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
@@ -291,6 +295,7 @@ export async function buildRemoveLiquidityMessage(formattedEventData: any, sourc
   const TX_HASH_URL_OPENCHAIN = getTxHashURLfromOpenchain(txHash);
 
   if (gasUsed !== "¯⧵_(ツ)_/¯") gasUsed = formatForPrint(gasUsed);
+  if (gasUsedWithoutTransfers !== "¯⧵_(ツ)_/¯") gasUsedWithoutTransfers = formatForPrint(gasUsedWithoutTransfers);
 
   let ethName = "ETH";
   let ethAddress;
@@ -341,7 +346,7 @@ export async function buildRemoveLiquidityMessage(formattedEventData: any, sourc
 
   return `
   🚀${hyperlink(buyerURL, shortenBuyer)} removed ${removedWhat}${getDollarAddOn(TOTAL_DOLLAR_VALUE)}
-Gas Used: ${gasUsed} 
+Gas Used: ${gasUsed} | w/o Transfers: ${gasUsedWithoutTransfers}
 State Prices: BTC ${formatForPrint(lastPrices0)} | ETH ${formatForPrint(lastPrices1)}
 New Fee: ${formatForPrint(fee)}%
 TVL: ${getDollarAddOnWithoutBrakets(TVL)}
@@ -350,7 +355,7 @@ Links:${hyperlink(getPoolURL(poolAddress), poolName)} |${hyperlink(TX_HASH_URL_E
 }
 
 export async function buildAddLiquidityMessage(formattedEventData: any, source: string) {
-  let { TVL, hasWETH, lastPrices0, lastPrices1, txHash, buyer, added_usdc, added_wbtc, added_WETH, gasUsed, TOTAL_DOLLAR_VALUE, fee } = formattedEventData;
+  let { TVL, hasWETH, lastPrices0, lastPrices1, txHash, buyer, added_usdc, added_wbtc, added_WETH, gasUsed, gasUsedWithoutTransfers, TOTAL_DOLLAR_VALUE, fee } = formattedEventData;
   const ADDRESS_USDC = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
   const ADDRESS_WBTC = "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599";
   const ADDRESS_WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
@@ -364,6 +369,7 @@ export async function buildAddLiquidityMessage(formattedEventData: any, source: 
   const TX_HASH_URL_OPENCHAIN = getTxHashURLfromOpenchain(txHash);
 
   if (gasUsed !== "¯⧵_(ツ)_/¯") gasUsed = formatForPrint(gasUsed);
+  if (gasUsedWithoutTransfers !== "¯⧵_(ツ)_/¯") gasUsedWithoutTransfers = formatForPrint(gasUsedWithoutTransfers);
 
   let ethName = "ETH";
   let ethAddress;
@@ -415,7 +421,7 @@ export async function buildAddLiquidityMessage(formattedEventData: any, source: 
 
   return `
   🚀${hyperlink(buyerURL, shortenBuyer)} added ${addedWhat}${getDollarAddOn(TOTAL_DOLLAR_VALUE)}
-Gas Used: ${gasUsed} 
+Gas Used: ${gasUsed} | w/o Transfers: ${gasUsedWithoutTransfers}
 State Prices: BTC ${formatForPrint(lastPrices0)} | ETH ${formatForPrint(lastPrices1)}
 New Fee: ${formatForPrint(fee)}%
 TVL: ${getDollarAddOnWithoutBrakets(TVL)}

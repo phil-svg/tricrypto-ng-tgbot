@@ -124,6 +124,9 @@ export function send(bot, message, groupID) {
     }, 30000); // 30000 ms = 30 seconds
 }
 function shortenAddress(address) {
+    const YearnSeasolver = "0xb634316E06cC0B358437CbadD4dC94F1D3a92B3b".toLowerCase();
+    if (address.toLowerCase() === YearnSeasolver)
+        return "Yearn Seasolver";
     return address.slice(0, 5) + ".." + address.slice(-2);
 }
 export async function buildTokenExchangeMessage(formattedEventData, source) {

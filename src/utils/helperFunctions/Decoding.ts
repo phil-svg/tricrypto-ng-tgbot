@@ -3,6 +3,7 @@ import { getTransactionReceipt, getTransferEvents, getTxReceipt, getWeb3HttpProv
 import * as dotenv from "dotenv";
 import { getPriceOf_WETH } from "../priceAPI/priceAPI.js";
 import fetch from "node-fetch";
+import { web3Call } from "../web3Calls/generic.js";
 dotenv.config();
 
 async function getCallTraceViaAlchemy(txHash: string): Promise<any> {
@@ -30,12 +31,12 @@ async function getCallTraceViaAlchemy(txHash: string): Promise<any> {
   return data.result;
 }
 
-function isErc20Transfer(transaction: { type: string; action: { input: string; value: string }; result: { output: string } }) {
+function isTokenTransfer(transaction: { type: string; action: { input: string; value: string }; result: { output: string } }) {
   const erc20TransferMethodIdentifier = "0xa9059cbb";
-  const addIdentifier = "0x23b872dd";
+  const wethIdentifier = "0x23b872dd";
   return (
     transaction.type === "call" &&
-    (transaction.action.input.startsWith(erc20TransferMethodIdentifier) || transaction.action.input.startsWith(addIdentifier)) &&
+    (transaction.action.input.startsWith(erc20TransferMethodIdentifier) || transaction.action.input.startsWith(wethIdentifier)) &&
     transaction.action.value === "0x0" &&
     transaction.result.output === "0x0000000000000000000000000000000000000000000000000000000000000001"
   );
@@ -83,7 +84,7 @@ async function getSpecificGas(txHash: string, from: string): Promise<any | null>
       // making sure not to go out of bounds
       let gasUsedHex = SIMULATION[i].result.gasUsed;
       let gasUsedDecimal = parseInt(gasUsedHex, 16); // converting hex to decimal
-      if (isErc20Transfer(SIMULATION[i])) {
+      if (isTokenTransfer(SIMULATION[i])) {
         gasUsedWithoutTransfers -= gasUsedDecimal;
       }
     }
@@ -315,7 +316,22 @@ export async function processTokenExchangeEvent(event: any, source: string) {
   const fee = await getFee(source, event.blockNumber);
   const TVL = await getTVL(source, event.blockNumber);
 
-  return { TVL, hasWETH, lastPrices0, lastPrices1, txHash, buyer, gasUsed, gasUsedWithoutTransfers, TOTAL_DOLLAR_VALUE, soldName, soldAmount, boughtName, boughtAmount, fee };
+  return {
+    TVL,
+    hasWETH,
+    lastPrices0,
+    lastPrices1,
+    txHash,
+    buyer,
+    gasUsed,
+    gasUsedWithoutTransfers,
+    TOTAL_DOLLAR_VALUE,
+    soldName,
+    soldAmount,
+    boughtName,
+    boughtAmount,
+    fee,
+  };
 }
 
 export async function processRemoveLiquidityOneEvent(event: any, source: string) {

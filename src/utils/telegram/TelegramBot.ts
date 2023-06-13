@@ -126,6 +126,8 @@ export function send(bot: any, message: string, groupID: number) {
 }
 
 function shortenAddress(address: string): string {
+  const YearnSeasolver = "0xb634316E06cC0B358437CbadD4dC94F1D3a92B3b".toLowerCase();
+  if (address.toLowerCase() === YearnSeasolver) return "Yearn Seasolver";
   return address.slice(0, 5) + ".." + address.slice(-2);
 }
 

@@ -20,11 +20,11 @@ async function main() {
     const TRICRYPTOUSDT = new WEB3_WS_PROVIDER.eth.Contract(ABI_TRICRYPTOUSDC, ADDRESS_NEWER_TRICRYPTO);
     //////////////////////// HISTO MODE ////////////////////////
     /*
-    const START_BLOCK = 17415782;
-    const END_BLOCK = 17417838;
+    // const START_BLOCK = 17415782;
+    // const END_BLOCK = 17417838;
   
-    // const START_BLOCK = 17401186;
-    // const END_BLOCK = 17401186;
+    const START_BLOCK = 17472879;
+    const END_BLOCK = 17472879;
   
     const PAST_EVENTS_NEW_RAW = await getPastEvents(TRICRYPTOUSDC, "allEvents", START_BLOCK, END_BLOCK);
     const PAST_EVENTS_NEW = Array.isArray(PAST_EVENTS_NEW_RAW) ? PAST_EVENTS_NEW_RAW.map((event) => ({ ...event, source: "TricryptoUSDC" })) : [];

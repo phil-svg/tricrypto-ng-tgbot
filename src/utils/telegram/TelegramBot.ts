@@ -125,10 +125,16 @@ export function send(bot: any, message: string, groupID: number) {
   }, 30000); // 30000 ms = 30 seconds
 }
 
+const CowSwap = "0x9008D19f58AAbD9eD0D60971565AA8510560ab41".toLowerCase();
+
 function shortenAddress(address: string): string {
-  const YearnSeasolver = "0xb634316E06cC0B358437CbadD4dC94F1D3a92B3b".toLowerCase();
-  if (address.toLowerCase() === YearnSeasolver) return "Yearn Seasolver";
+  if (address.toLowerCase() === CowSwap) return "cowswap";
   return address.slice(0, 5) + ".." + address.slice(-2);
+}
+
+function rocketThingy(address: string): string {
+  if (address.toLowerCase() === CowSwap) return "🐮";
+  return "🚀";
 }
 
 export async function buildTokenExchangeMessage(formattedEventData: any, source: string) {
@@ -202,7 +208,7 @@ export async function buildTokenExchangeMessage(formattedEventData: any, source:
   if (!poolAddress) return;
 
   return `
-  🚀${hyperlink(buyerURL, shortenBuyer)} swapped ${soldWhat} for ${boughtWhat}${getDollarAddOn(TOTAL_DOLLAR_VALUE)}
+  ${rocketThingy(buyer)}${hyperlink(buyerURL, shortenBuyer)} swapped ${soldWhat} for ${boughtWhat}${getDollarAddOn(TOTAL_DOLLAR_VALUE)}
 Gas Used: ${gasUsed} | w/o Transfers: ${gasUsedWithoutTransfers}
 State Prices: BTC ${formatForPrint(lastPrices0)} | ETH ${formatForPrint(lastPrices1)}
 New Fee: ${formatForPrint(fee)}%
@@ -272,7 +278,7 @@ export async function buildRemoveLiquidityOneMessage(formattedEventData: any, so
   if (!poolAddress) return;
 
   return `
-  🚀${hyperlink(buyerURL, shortenBuyer)} removed ${removedWhat}${getDollarAddOn(TOTAL_DOLLAR_VALUE)}
+  ${rocketThingy(buyer)}${hyperlink(buyerURL, shortenBuyer)} removed ${removedWhat}${getDollarAddOn(TOTAL_DOLLAR_VALUE)}
 Gas Used: ${gasUsed} | w/o Transfers: ${gasUsedWithoutTransfers}
 State Prices: BTC ${formatForPrint(lastPrices0)} | ETH ${formatForPrint(lastPrices1)}
 New Fee: ${formatForPrint(fee)}%
@@ -347,7 +353,7 @@ export async function buildRemoveLiquidityMessage(formattedEventData: any, sourc
   if (!poolAddress) return;
 
   return `
-  🚀${hyperlink(buyerURL, shortenBuyer)} removed ${removedWhat}${getDollarAddOn(TOTAL_DOLLAR_VALUE)}
+  ${rocketThingy(buyer)}${hyperlink(buyerURL, shortenBuyer)} removed ${removedWhat}${getDollarAddOn(TOTAL_DOLLAR_VALUE)}
 Gas Used: ${gasUsed} | w/o Transfers: ${gasUsedWithoutTransfers}
 State Prices: BTC ${formatForPrint(lastPrices0)} | ETH ${formatForPrint(lastPrices1)}
 New Fee: ${formatForPrint(fee)}%
@@ -422,7 +428,7 @@ export async function buildAddLiquidityMessage(formattedEventData: any, source: 
   if (!poolAddress) return;
 
   return `
-  🚀${hyperlink(buyerURL, shortenBuyer)} added ${addedWhat}${getDollarAddOn(TOTAL_DOLLAR_VALUE)}
+  ${rocketThingy(buyer)}${hyperlink(buyerURL, shortenBuyer)} added ${addedWhat}${getDollarAddOn(TOTAL_DOLLAR_VALUE)}
 Gas Used: ${gasUsed} | w/o Transfers: ${gasUsedWithoutTransfers}
 State Prices: BTC ${formatForPrint(lastPrices0)} | ETH ${formatForPrint(lastPrices1)}
 New Fee: ${formatForPrint(fee)}%

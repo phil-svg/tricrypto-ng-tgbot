@@ -73,7 +73,7 @@ async function getSpecificGas(txHash, from) {
     return [maxGasUsed, gasUsedWithoutTransfers];
 }
 async function getWBTCPrice(blockNumber) {
-    let web3 = getWeb3HttpProvider();
+    let web3 = await getWeb3HttpProvider();
     const ADDRESS_TRICRYPTO = "0xD51a44d3FaE010294C616388b506AcdA1bfAAE46";
     const ABI_TRICRYPTO_RAW = fs.readFileSync("../JSONs/OLD_TRICRYPTOAbi.json", "utf8");
     const ABI_TRICRYPTO = JSON.parse(ABI_TRICRYPTO_RAW);
@@ -86,7 +86,7 @@ async function getWBTCPrice(blockNumber) {
     }
 }
 async function getWETHPrice(blockNumber) {
-    let web3 = getWeb3HttpProvider();
+    let web3 = await getWeb3HttpProvider();
     const ADDRESS_TRICRYPTO = "0xD51a44d3FaE010294C616388b506AcdA1bfAAE46";
     const ABI_TRICRYPTO_RAW = fs.readFileSync("../JSONs/OLD_TRICRYPTOAbi.json", "utf8");
     const ABI_TRICRYPTO = JSON.parse(ABI_TRICRYPTO_RAW);
@@ -110,7 +110,7 @@ async function getGasUsed(txHash) {
     }
 }
 async function getLastPrices0(blockNumber) {
-    let web3 = getWeb3HttpProvider();
+    let web3 = await getWeb3HttpProvider();
     const ADDRESS_NEW_TRICRYPTO = "0x7F86Bf177Dd4F3494b841a37e810A34dD56c829B";
     const ABI_NEW_TRICRYPTO_RAW = fs.readFileSync("../JSONs/NEWTRICRYPTOAbi.json", "utf8");
     const ABI_NEW_TRICRYPTO = JSON.parse(ABI_NEW_TRICRYPTO_RAW);
@@ -118,7 +118,7 @@ async function getLastPrices0(blockNumber) {
     return (await NEW_TRICRYPTO.methods.last_prices(0).call(blockNumber)) / 1e18;
 }
 async function getLastPrices1(blockNumber) {
-    let web3 = getWeb3HttpProvider();
+    let web3 = await getWeb3HttpProvider();
     const ADDRESS_NEW_TRICRYPTO = "0x7F86Bf177Dd4F3494b841a37e810A34dD56c829B";
     const ABI_NEW_TRICRYPTO_RAW = fs.readFileSync("../JSONs/NEWTRICRYPTOAbi.json", "utf8");
     const ABI_NEW_TRICRYPTO = JSON.parse(ABI_NEW_TRICRYPTO_RAW);
@@ -145,7 +145,7 @@ async function getFee(source, blockNumber) {
         else if (source === "TricryptoUSDT") {
             contractAddress = "0xf5f5B97624542D72A9E06f04804Bf81baA15e2B4";
         }
-        let web3 = getWeb3HttpProvider();
+        let web3 = await getWeb3HttpProvider();
         const ABI_NEW_TRICRYPTO_RAW = fs.readFileSync("../JSONs/NEWTRICRYPTOAbi.json", "utf8");
         const ABI_NEW_TRICRYPTO = JSON.parse(ABI_NEW_TRICRYPTO_RAW);
         const CONTRACT = new web3.eth.Contract(ABI_NEW_TRICRYPTO, contractAddress);
@@ -195,7 +195,7 @@ async function getTVL(source, blockNumber) {
         else if (source === "TricryptoUSDT") {
             contractAddress = "0xf5f5B97624542D72A9E06f04804Bf81baA15e2B4";
         }
-        let web3 = getWeb3HttpProvider();
+        let web3 = await getWeb3HttpProvider();
         const ABI_NEW_TRICRYPTO_RAW = fs.readFileSync("../JSONs/NEWTRICRYPTOAbi.json", "utf8");
         const ABI_NEW_TRICRYPTO = JSON.parse(ABI_NEW_TRICRYPTO_RAW);
         const CONTRACT = new web3.eth.Contract(ABI_NEW_TRICRYPTO, contractAddress);

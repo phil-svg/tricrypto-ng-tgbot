@@ -58,7 +58,7 @@ export async function getTxReceipt(txHash: string): Promise<any> {
 
 export async function getTransferEvents(receipt: any, userAddress: string) {
   const transferEvents = [];
-  let web3 = getWeb3HttpProvider();
+  let web3 = await getWeb3HttpProvider();
   if (receipt.logs) {
     for (const log of receipt.logs) {
       if (log.topics[0] !== "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef") {
@@ -113,7 +113,7 @@ export async function traceTransaction(txHash: string): Promise<any> {
 }
 
 export async function getTransactionReceipt(txHash: string): Promise<any | null> {
-  let web3 = getWeb3HttpProvider();
+  let web3 = await getWeb3HttpProvider();
   try {
     const txReceipt = await web3.eth.getTransactionReceipt(txHash);
     return txReceipt;

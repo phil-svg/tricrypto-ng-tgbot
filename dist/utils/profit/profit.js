@@ -16,7 +16,7 @@ async function getEthPrice(blockNumber) {
     }
 }
 async function getCosts(txHash, blockNumber) {
-    let web3 = getWeb3HttpProvider();
+    let web3 = await getWeb3HttpProvider();
     try {
         const txReceipt = await web3.eth.getTransactionReceipt(txHash);
         const gasUsed = txReceipt.gasUsed;
@@ -57,7 +57,7 @@ async function adjustBalancesForDecimals(balanceChanges) {
     return balanceChanges;
 }
 async function getTokenSymbol(tokenAddress) {
-    let web3 = getWeb3HttpProvider();
+    let web3 = await getWeb3HttpProvider();
     const SYMBOL_ABI = [
         {
             inputs: [],
@@ -82,7 +82,7 @@ async function getTokenSymbol(tokenAddress) {
     }
 }
 async function getTokenDecimals(tokenAddress) {
-    let web3 = getWeb3HttpProvider();
+    let web3 = await getWeb3HttpProvider();
     const DECIMALS_ABI = [
         {
             inputs: [],
@@ -131,7 +131,7 @@ function getTokenBalanceChanges(transferEvents, userAddress) {
     return balanceChanges;
 }
 async function getEthBalanceChange(userAddress, blockNumber) {
-    let web3 = getWeb3HttpProvider();
+    let web3 = await getWeb3HttpProvider();
     // Fetch the user's Ether balance one block before and one block after the transaction
     let balanceBefore = await web3.eth.getBalance(userAddress, blockNumber - 1);
     let balanceAfter = await web3.eth.getBalance(userAddress, blockNumber);
@@ -141,7 +141,7 @@ async function getEthBalanceChange(userAddress, blockNumber) {
     const balanceChangeEther = web3.utils.fromWei(balanceChange, "ether");
     return balanceChangeEther;
 }
-function getWithdrawalEvents(receipt, userAddress) {
+async function getWithdrawalEvents(receipt, userAddress) {
     const withdrawalEvents = [];
     let web3 = getWeb3HttpProvider();
     if (receipt.logs) {
@@ -234,7 +234,7 @@ async function getRevenue(event) {
     // console.log("txReceipt", txReceipt);
     const buyerTransfersInAndOut = getTransferEvents(txReceipt, event.returnValues.buyer);
     const wethWithdrawals = getWithdrawalEvents(txReceipt, event.returnValues.buyer);
-    const combinedEvents = combineEvents(buyerTransfersInAndOut, wethWithdrawals);
+    const combinedEvents = combineEvents(buyerTransfersInAndOut, await wethWithdrawals);
     const balanceChanges = getTokenBalanceChanges(combinedEvents, event.returnValues.buyer);
     const ethBalanceChange = await getEthBalanceChange(event.returnValues.buyer, event.blockNumber);
     const balanceChangesWithEth = addEthBalanceChange(balanceChanges, ethBalanceChange);

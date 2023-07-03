@@ -4,7 +4,7 @@ import fs from "fs";
 const rawTokens = getRawTokens();
 const tokens = rawTokens;
 async function getEthPrice(blockNumber) {
-    let web3 = getWeb3HttpProvider();
+    let web3 = await getWeb3HttpProvider();
     const ADDRESS_TRICRYPTO = "0xD51a44d3FaE010294C616388b506AcdA1bfAAE46";
     const ABI_TRICRYPTO_RAW = fs.readFileSync("../JSONs/OLD_TRICRYPTOAbi.json", "utf8");
     const ABI_TRICRYPTO = JSON.parse(ABI_TRICRYPTO_RAW);
@@ -17,9 +17,9 @@ async function getEthPrice(blockNumber) {
     }
 }
 export async function getPriceOf_sfrxETH(blockNumber) {
-    let web3 = getWeb3HttpProvider();
+    let web3 = await getWeb3HttpProvider();
     const ADDRESS_PRICE_ORACLE = "0x19F5B81e5325F882C9853B5585f74f751DE3896d";
-    const ABI_PRICE_ORACLE_RAW = fs.readFileSync("../JSONs/PRICE_ORACLEAbi.json", "utf8");
+    const ABI_PRICE_ORACLE_RAW = fs.readFileSync("../JSONs/PRICE_ORACLEabi.json", "utf8");
     const ABI_PRICE_ORACLE = JSON.parse(ABI_PRICE_ORACLE_RAW);
     const PRICE_ORACLE = new web3.eth.Contract(ABI_PRICE_ORACLE, ADDRESS_PRICE_ORACLE);
     try {
@@ -36,7 +36,7 @@ export async function getPriceOf_frxETH(blockNumber) {
     return await getEthPrice(blockNumber);
 }
 export async function getPriceOf_crvUSD(blockNumber) {
-    let web3 = getWeb3HttpProvider();
+    let web3 = await getWeb3HttpProvider();
     const ADDRESS_PRICE_AGGREGATOR = "0xD51a44d3FaE010294C616388b506AcdA1bfAAE46";
     const ABI_PRICE_AGGREGATOR_RAW = fs.readFileSync("../JSONs/PRICE_AGGREGATORAbi.json", "utf8");
     const ABI_PRICE_AGGREGATOR = JSON.parse(ABI_PRICE_AGGREGATOR_RAW);

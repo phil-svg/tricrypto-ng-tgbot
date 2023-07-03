@@ -1,5 +1,6 @@
 import TelegramBot from "node-telegram-bot-api";
 import dotenv from "dotenv";
+import { labels } from "../../Labels.js";
 dotenv.config({ path: "../.env" });
 function getTokenURL(tokenAddress) {
     return "https://etherscan.io/token/" + tokenAddress;
@@ -15,6 +16,9 @@ function getTxHashURLfromTenderly(txHash) {
 }
 function getTxHashURLfromOpenchain(txHash) {
     return "https://openchain.xyz/trace/ethereum/" + txHash;
+}
+function getTxHashURLfromCowexplorer(txHash) {
+    return "https://explorer.cow.fi/tx/" + txHash + "?tab=graph";
 }
 function getBuyerURL(buyerAddress) {
     return "https://etherscan.io/address/" + buyerAddress;
@@ -125,9 +129,15 @@ export function send(bot, message, groupID) {
 }
 const CowSwap = "0x9008D19f58AAbD9eD0D60971565AA8510560ab41".toLowerCase();
 function shortenAddress(address) {
-    if (address.toLowerCase() === CowSwap)
-        return "cowswap";
     return address.slice(0, 5) + ".." + address.slice(-2);
+}
+function getAddressName(address) {
+    // Find label for address
+    if (address.toLowerCase() === CowSwap)
+        return "Cowswap";
+    const labelObject = labels.find((label) => label.Address.toLowerCase() === address.toLowerCase());
+    // If label found, return it. Otherwise, return shortened address
+    return labelObject ? labelObject.Label : shortenAddress(address);
 }
 function rocketThingy(address) {
     if (address.toLowerCase() === CowSwap)
@@ -140,11 +150,12 @@ export async function buildTokenExchangeMessage(formattedEventData, source) {
     const ADDRESS_WBTC = "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599";
     const ADDRESS_WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
     const ADDRESS_USDT = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
-    const buyerURL = getBuyerURL(buyer);
-    const shortenBuyer = shortenAddress(buyer);
+    let buyerURL = getBuyerURL(buyer);
+    const shortenBuyer = getAddressName(buyer);
     const TX_HASH_URL_ETHERSCAN = getTxHashURLfromEtherscan(txHash);
     const TX_HASH_URL_TENDERLY = getTxHashURLfromTenderly(txHash);
     const TX_HASH_URL_OPENCHAIN = getTxHashURLfromOpenchain(txHash);
+    const TX_HASH_URL_COW_EXPLORER = getTxHashURLfromCowexplorer(txHash);
     if (gasUsed !== "¯⧵_(ツ)_/¯")
         gasUsed = formatForPrint(gasUsed);
     if (gasUsedWithoutTransfers !== "¯⧵_(ツ)_/¯")
@@ -205,6 +216,8 @@ export async function buildTokenExchangeMessage(formattedEventData, source) {
         return;
     if (!poolAddress)
         return;
+    if (shortenBuyer === "Cowswap")
+        buyerURL = TX_HASH_URL_COW_EXPLORER; // turns "Cowswap"-Label into link to https://explorer.cow.fi/
     return `
   ${rocketThingy(buyer)}${hyperlink(buyerURL, shortenBuyer)} swapped ${soldWhat} for ${boughtWhat}${getDollarAddOn(TOTAL_DOLLAR_VALUE)}
 Gas Used: ${gasUsed} | w/o Transfers: ${gasUsedWithoutTransfers}
@@ -220,11 +233,12 @@ export async function buildRemoveLiquidityOneMessage(formattedEventData, source)
     const ADDRESS_WBTC = "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599";
     const ADDRESS_WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
     const ADDRESS_USDT = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
-    const buyerURL = getBuyerURL(buyer);
-    const shortenBuyer = shortenAddress(buyer);
+    let buyerURL = getBuyerURL(buyer);
+    const shortenBuyer = getAddressName(buyer);
     const TX_HASH_URL_ETHERSCAN = getTxHashURLfromEtherscan(txHash);
     const TX_HASH_URL_TENDERLY = getTxHashURLfromTenderly(txHash);
     const TX_HASH_URL_OPENCHAIN = getTxHashURLfromOpenchain(txHash);
+    const TX_HASH_URL_COW_EXPLORER = getTxHashURLfromCowexplorer(txHash);
     if (gasUsed !== "¯⧵_(ツ)_/¯")
         gasUsed = formatForPrint(gasUsed);
     if (gasUsedWithoutTransfers !== "¯⧵_(ツ)_/¯")
@@ -275,6 +289,8 @@ export async function buildRemoveLiquidityOneMessage(formattedEventData, source)
         return;
     if (!poolAddress)
         return;
+    if (shortenBuyer === "Cowswap")
+        buyerURL = TX_HASH_URL_COW_EXPLORER; // turns "Cowswap"-Label into link to https://explorer.cow.fi/
     return `
   ${rocketThingy(buyer)}${hyperlink(buyerURL, shortenBuyer)} removed ${removedWhat}${getDollarAddOn(TOTAL_DOLLAR_VALUE)}
 Gas Used: ${gasUsed} | w/o Transfers: ${gasUsedWithoutTransfers}
@@ -290,11 +306,12 @@ export async function buildRemoveLiquidityMessage(formattedEventData, source) {
     const ADDRESS_WBTC = "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599";
     const ADDRESS_WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
     const ADDRESS_USDT = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
-    const buyerURL = getBuyerURL(buyer);
-    const shortenBuyer = shortenAddress(buyer);
+    let buyerURL = getBuyerURL(buyer);
+    const shortenBuyer = getAddressName(buyer);
     const TX_HASH_URL_ETHERSCAN = getTxHashURLfromEtherscan(txHash);
     const TX_HASH_URL_TENDERLY = getTxHashURLfromTenderly(txHash);
     const TX_HASH_URL_OPENCHAIN = getTxHashURLfromOpenchain(txHash);
+    const TX_HASH_URL_COW_EXPLORER = getTxHashURLfromCowexplorer(txHash);
     if (gasUsed !== "¯⧵_(ツ)_/¯")
         gasUsed = formatForPrint(gasUsed);
     if (gasUsedWithoutTransfers !== "¯⧵_(ツ)_/¯")
@@ -343,6 +360,8 @@ export async function buildRemoveLiquidityMessage(formattedEventData, source) {
         return;
     if (!poolAddress)
         return;
+    if (shortenBuyer === "Cowswap")
+        buyerURL = TX_HASH_URL_COW_EXPLORER; // turns "Cowswap"-Label into link to https://explorer.cow.fi/
     return `
   ${rocketThingy(buyer)}${hyperlink(buyerURL, shortenBuyer)} removed ${removedWhat}${getDollarAddOn(TOTAL_DOLLAR_VALUE)}
 Gas Used: ${gasUsed} | w/o Transfers: ${gasUsedWithoutTransfers}
@@ -358,11 +377,12 @@ export async function buildAddLiquidityMessage(formattedEventData, source) {
     const ADDRESS_WBTC = "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599";
     const ADDRESS_WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
     const ADDRESS_USDT = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
-    const buyerURL = getBuyerURL(buyer);
-    const shortenBuyer = shortenAddress(buyer);
+    let buyerURL = getBuyerURL(buyer);
+    const shortenBuyer = getAddressName(buyer);
     const TX_HASH_URL_ETHERSCAN = getTxHashURLfromEtherscan(txHash);
     const TX_HASH_URL_TENDERLY = getTxHashURLfromTenderly(txHash);
     const TX_HASH_URL_OPENCHAIN = getTxHashURLfromOpenchain(txHash);
+    const TX_HASH_URL_COW_EXPLORER = getTxHashURLfromCowexplorer(txHash);
     if (gasUsed !== "¯⧵_(ツ)_/¯")
         gasUsed = formatForPrint(gasUsed);
     if (gasUsedWithoutTransfers !== "¯⧵_(ツ)_/¯")
@@ -411,6 +431,8 @@ export async function buildAddLiquidityMessage(formattedEventData, source) {
         return;
     if (!poolAddress)
         return;
+    if (shortenBuyer === "Cowswap")
+        buyerURL = TX_HASH_URL_COW_EXPLORER; // turns "Cowswap"-Label into link to https://explorer.cow.fi/
     return `
   ${rocketThingy(buyer)}${hyperlink(buyerURL, shortenBuyer)} added ${addedWhat}${getDollarAddOn(TOTAL_DOLLAR_VALUE)}
 Gas Used: ${gasUsed} | w/o Transfers: ${gasUsedWithoutTransfers}

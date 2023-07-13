@@ -47,6 +47,10 @@ function formatForPrint(someNumber) {
     }
     return someNumber;
 }
+const ADDRESS_USDC = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+const ADDRESS_WBTC = "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599";
+const ADDRESS_WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+const ADDRESS_USDT = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
 function getDollarAddOn(amountStr) {
     let amount;
     if (typeof amountStr === "string") {
@@ -128,6 +132,7 @@ export function send(bot, message, groupID) {
     }, 30000); // 30000 ms = 30 seconds
 }
 const CowSwap = "0x9008D19f58AAbD9eD0D60971565AA8510560ab41".toLowerCase();
+const Seasolver = "0xb634316E06cC0B358437CbadD4dC94F1D3a92B3b".toLowerCase();
 function shortenAddress(address) {
     return address.slice(0, 5) + ".." + address.slice(-2);
 }
@@ -142,14 +147,12 @@ function getAddressName(address) {
 function rocketThingy(address) {
     if (address.toLowerCase() === CowSwap)
         return "🐮";
+    if (address.toLowerCase() === Seasolver)
+        return "🧜‍♂️";
     return "🚀";
 }
 export async function buildTokenExchangeMessage(formattedEventData, source) {
     let { TVL, hasWETH, lastPrices0, lastPrices1, txHash, buyer, gasUsed, gasUsedWithoutTransfers, TOTAL_DOLLAR_VALUE, soldName, soldAmount, boughtName, boughtAmount, fee } = formattedEventData;
-    const ADDRESS_USDC = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
-    const ADDRESS_WBTC = "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599";
-    const ADDRESS_WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
-    const ADDRESS_USDT = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
     let buyerURL = getBuyerURL(buyer);
     const shortenBuyer = getAddressName(buyer);
     const TX_HASH_URL_ETHERSCAN = getTxHashURLfromEtherscan(txHash);
@@ -229,10 +232,6 @@ Links:${hyperlink(getPoolURL(poolAddress), poolName)} |${hyperlink(TX_HASH_URL_E
 }
 export async function buildRemoveLiquidityOneMessage(formattedEventData, source) {
     let { TVL, hasWETH, lastPrices0, lastPrices1, txHash, buyer, amount, gasUsed, gasUsedWithoutTransfers, TOTAL_DOLLAR_VALUE, coinName, fee } = formattedEventData;
-    const ADDRESS_USDC = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
-    const ADDRESS_WBTC = "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599";
-    const ADDRESS_WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
-    const ADDRESS_USDT = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
     let buyerURL = getBuyerURL(buyer);
     const shortenBuyer = getAddressName(buyer);
     const TX_HASH_URL_ETHERSCAN = getTxHashURLfromEtherscan(txHash);
@@ -302,10 +301,6 @@ Links:${hyperlink(getPoolURL(poolAddress), poolName)} |${hyperlink(TX_HASH_URL_E
 }
 export async function buildRemoveLiquidityMessage(formattedEventData, source) {
     let { TVL, hasWETH, lastPrices0, lastPrices1, txHash, buyer, amount_usdc, amount_wbtc, amount_WETH, gasUsed, gasUsedWithoutTransfers, TOTAL_DOLLAR_VALUE, fee } = formattedEventData;
-    const ADDRESS_USDC = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
-    const ADDRESS_WBTC = "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599";
-    const ADDRESS_WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
-    const ADDRESS_USDT = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
     let buyerURL = getBuyerURL(buyer);
     const shortenBuyer = getAddressName(buyer);
     const TX_HASH_URL_ETHERSCAN = getTxHashURLfromEtherscan(txHash);
@@ -373,10 +368,6 @@ Links:${hyperlink(getPoolURL(poolAddress), poolName)} |${hyperlink(TX_HASH_URL_E
 }
 export async function buildAddLiquidityMessage(formattedEventData, source) {
     let { TVL, hasWETH, lastPrices0, lastPrices1, txHash, buyer, added_usdc, added_wbtc, added_WETH, gasUsed, gasUsedWithoutTransfers, TOTAL_DOLLAR_VALUE, fee } = formattedEventData;
-    const ADDRESS_USDC = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
-    const ADDRESS_WBTC = "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599";
-    const ADDRESS_WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
-    const ADDRESS_USDT = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
     let buyerURL = getBuyerURL(buyer);
     const shortenBuyer = getAddressName(buyer);
     const TX_HASH_URL_ETHERSCAN = getTxHashURLfromEtherscan(txHash);

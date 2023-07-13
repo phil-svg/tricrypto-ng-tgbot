@@ -163,4 +163,8 @@ export const labels = [
     Address: "0x92F3f71CeF740ED5784874B8C70Ff87ECdF33588",
     Label: "1Inch",
   },
+  {
+    Address: "0xb634316E06cC0B358437CbadD4dC94F1D3a92B3b",
+    Label: "Seasolver",
+  },
 ];
